@@ -12,7 +12,14 @@
         "messageKeys": [],
         "projectType": "native",
         "resources": {
-            "media": []
+            "media": [
+                {
+                    "file": "data/confirm_sequence.pdc",
+                    "name": "CONFIRM_SEQUENCE",
+                    "targetPlatforms": null,
+                    "type": "raw"
+                }
+            ]
         },
         "sdkVersion": "3",
         "targetPlatforms": [
