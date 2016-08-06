@@ -5,6 +5,7 @@
 #define sensitivity 850
 
 static void load_animation();
+static void send_message();
 
 static Window* window;
 static TextLayer* text_layer;
@@ -25,6 +26,11 @@ static void accel_data_handler(AccelData* data, uint32_t num_samples) {
   if (dy > sensitivity) {
     snprintf(buf, sizeof(buf), "HANDSHAKE!");
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "DeltaY: %d Handshake!",dy);
+		
+		//send messge to andorid app
+		app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+		send_message();
+		
     //update text view
 		text_layer_set_text(text_layer, buf);
 		
@@ -110,6 +116,27 @@ static void load_animation(){
   layer_add_child(window_get_root_layer(window), s_canvas_layer);
 	
 }
+
+/*
+	send string to android app
+*/
+static void send_message(){
+ 
+	DictionaryIterator *iter;
+
+	AppMessageResult result=app_message_outbox_begin(&iter);
+
+	if(result==APP_MSG_OK){
+		dict_write_cstring(iter, 1, "ciao");
+		dict_write_end(iter);
+
+		AppMessageResult result2=app_message_outbox_send();
+		APP_LOG(APP_LOG_LEVEL_ERROR, "invio fatto\nerrore outbox_send %d", (int)result2);
+	}
+	else{
+		APP_LOG(APP_LOG_LEVEL_ERROR, "errore %d", (int)result);
+	}
+}  
 
 
 /*
