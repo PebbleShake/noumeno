@@ -207,7 +207,7 @@ static void init(void) {
     const bool animated = true;
 	
 		//init animation
-		s_command_seq = gdraw_command_sequence_create_with_resource(RESOURCE_ID_CONFIRM_SEQUENCE);
+		s_command_seq = gdraw_command_sequence_create_with_resource(RESOURCE_ID_SENT_SEQUENCE);
 	
 		//start
     window_stack_push(window, animated);

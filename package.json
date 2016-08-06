@@ -14,8 +14,8 @@
         "resources": {
             "media": [
                 {
-                    "file": "data/confirm_sequence.pdc",
-                    "name": "CONFIRM_SEQUENCE",
+                    "file": "data/sent_sequence.pdc",
+                    "name": "SENT_SEQUENCE",
                     "targetPlatforms": null,
                     "type": "raw"
                 }
