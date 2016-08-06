@@ -9,7 +9,7 @@ static void send_message();
 
 static Window* window;
 static TextLayer* text_layer;
-static TextLayer* time_layer, *date_layer;
+static TextLayer* time_layer, *date_layer, *label_layer;
 
 static GDrawCommandSequence *s_command_seq;
 static Layer *s_canvas_layer;
@@ -103,6 +103,7 @@ static void update_proc(Layer *layer, GContext *ctx) {
 	if (frame_index == num_frames) {
 			//restore background color
   	  window_set_background_color(window, GColorBlack);
+		text_layer_destroy(label_layer);
 	}
 }
 
@@ -114,6 +115,16 @@ static void load_animation(){
  	layer_set_update_proc(s_canvas_layer, update_proc);
 	// Add to parent Window
   layer_add_child(window_get_root_layer(window), s_canvas_layer);
+	
+	//display text label
+  label_layer = text_layer_create((GRect) { .origin = { 0, 130 }, .size = { 144, 30 } });
+	text_layer_set_text_color(label_layer, GColorBlack);
+	text_layer_set_text(label_layer, "Invitation sent");
+	text_layer_set_text_alignment(label_layer, GTextAlignmentCenter);
+	text_layer_set_font(label_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28));
+	text_layer_set_background_color(label_layer, GColorClear);
+	layer_add_child(window_get_root_layer(window), text_layer_get_layer(label_layer));
+	
 	
 }
 
