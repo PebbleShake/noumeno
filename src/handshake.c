@@ -1,8 +1,15 @@
 #include <pebble.h>
 
+//define animation framerate
+#define DELTA 33 
+
 static Window* window;
 static TextLayer* text_layer;
 static TextLayer* time_layer, *date_layer;
+
+static GDrawCommandSequence *s_command_seq;
+static Layer *s_canvas_layer;
+static int frame_index = 0;
 
 static int sensitivity;
 
@@ -16,17 +23,17 @@ static void accel_data_handler(AccelData* data, uint32_t num_samples) {
 	//if the handshake happens
   if (dy > sensitivity) {
     snprintf(buf, sizeof(buf), "HANDSHAKE!");
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "Delta: %d Handshake!",dy);
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "DeltaY: %d Handshake!",dy);
     //update text view
 		text_layer_set_text(text_layer, buf);
-    
+		
 		//double vibration
 		vibes_double_pulse();
   }
 	//if it doesn't
 	else {
-    snprintf(buf, sizeof(buf), "Delta: %d", dy);
-		APP_LOG(APP_LOG_LEVEL_DEBUG, "Delta: %d", dy);
+    snprintf(buf, sizeof(buf), "DeltaY: %d", dy);
+		APP_LOG(APP_LOG_LEVEL_DEBUG, "DeltaY: %d", dy);
     text_layer_set_text(text_layer, buf);
   }
 }
@@ -61,6 +68,35 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time();
 }
 
+/**
+	** ANIMATION STUFF **
+**/
+static void next_frame_handler(void *context) {
+  // Draw the next frame
+  layer_mark_dirty(s_canvas_layer);
+
+  // Continue the sequence
+  app_timer_register(DELTA, next_frame_handler, NULL);
+}
+
+static void update_proc(Layer *layer, GContext *ctx) {
+  // Get the next frame
+  GDrawCommandFrame *frame = gdraw_command_sequence_get_frame_by_index(s_command_seq, frame_index);
+
+  // If another frame was found, draw it
+  if (frame) {
+    gdraw_command_frame_draw(ctx, s_command_seq, frame, GPoint(0, 30));
+  }
+
+  // Advance to the next frame, wrapping if neccessary
+  int num_frames = gdraw_command_sequence_get_num_frames(s_command_seq);
+  frame_index++;
+  if (frame_index == num_frames) {
+    frame_index = 0;
+  }
+}
+
+
 /*
 	initialise window
 */
@@ -94,15 +130,25 @@ static void window_load(Window *window) {
 		text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
 		// display it
 		layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_layer));
+	
+		// Create the canvas Layer
+	  s_canvas_layer = layer_create(GRect(30, 30, bounds.size.w, bounds.size.h));
+	  // Set the LayerUpdateProc
+  	layer_set_update_proc(s_canvas_layer, update_proc);
+		// Add to parent Window
+  	layer_add_child(window_layer, s_canvas_layer);
 }
 
 /*
-	destroy window when unused
+	destroy window compunents when done
 */
 static void window_unload(Window *window) {
     text_layer_destroy(text_layer);
 		text_layer_destroy(time_layer);
 		text_layer_destroy(date_layer);
+	
+		//destroy animation
+		gdraw_command_sequence_destroy(s_command_seq);
 }
 
 /*
@@ -122,6 +168,11 @@ static void init(void) {
 		sensitivity = 850;
     accel_data_service_subscribe(5, accel_data_handler);
     const bool animated = true;
+	
+		//init animation
+		s_command_seq = gdraw_command_sequence_create_with_resource(RESOURCE_ID_CONFIRM_SEQUENCE);
+	
+		//start
     window_stack_push(window, animated);
 		
 		//update time at the start
