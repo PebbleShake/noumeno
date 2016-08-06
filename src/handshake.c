@@ -1,7 +1,9 @@
 #include <pebble.h>
 
 //define animation framerate
-#define DELTA 33 
+#define DELTA 100 
+
+static void load_animation();
 
 static Window* window;
 static TextLayer* text_layer;
@@ -29,6 +31,8 @@ static void accel_data_handler(AccelData* data, uint32_t num_samples) {
 		
 		//double vibration
 		vibes_double_pulse();
+		
+		load_animation();
   }
 	//if it doesn't
 	else {
@@ -91,9 +95,21 @@ static void update_proc(Layer *layer, GContext *ctx) {
   // Advance to the next frame, wrapping if neccessary
   int num_frames = gdraw_command_sequence_get_num_frames(s_command_seq);
   frame_index++;
-  if (frame_index == num_frames) {
-    frame_index = 0;
-  }
+	if (frame_index == num_frames) {
+			//restore background color
+  	  window_set_background_color(window, GColorBlack);
+	}
+}
+
+static void load_animation(){
+	frame_index = 0;
+	window_set_background_color(window, GColorWhite);
+	
+  // Set the LayerUpdateProc
+ 	layer_set_update_proc(s_canvas_layer, update_proc);
+	// Add to parent Window
+  layer_add_child(window_get_root_layer(window), s_canvas_layer);
+	
 }
 
 
@@ -132,11 +148,7 @@ static void window_load(Window *window) {
 		layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_layer));
 	
 		// Create the canvas Layer
-	  s_canvas_layer = layer_create(GRect(30, 30, bounds.size.w, bounds.size.h));
-	  // Set the LayerUpdateProc
-  	layer_set_update_proc(s_canvas_layer, update_proc);
-		// Add to parent Window
-  	layer_add_child(window_layer, s_canvas_layer);
+  	s_canvas_layer = layer_create(GRect(30, 20, bounds.size.w, bounds.size.h));
 }
 
 /*
