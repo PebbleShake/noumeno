@@ -70,12 +70,13 @@ static void window_load(Window *window) {
 	
 		//display text layer
     text_layer = text_layer_create((GRect) { .origin = { 0, bounds.size.h-20 }, .size = { bounds.size.w, 20 } });
-		text_layer_set_text_color(text_layer, GColorBlack);
+		text_layer_set_text_color(text_layer, GColorWhite);
+		text_layer_set_background_color(text_layer, GColorClear);
 		layer_add_child(window_layer, text_layer_get_layer(text_layer));
 	
 		//contruct time layer
 		time_layer = text_layer_create(
-      GRect(0, PBL_IF_ROUND_ELSE(58, 52), bounds.size.w, 50));
+      GRect(0, PBL_IF_ROUND_ELSE(62, 57), bounds.size.w, 50));
 		text_layer_set_background_color(time_layer, GColorClear);
   	text_layer_set_text_color(time_layer, GColorWhite);
   	text_layer_set_text(time_layer, "00:00");
@@ -85,9 +86,10 @@ static void window_load(Window *window) {
 		layer_add_child(window_layer, text_layer_get_layer(time_layer));
 	
 		//construct date layer
-		date_layer = text_layer_create(GRect(0, 49, bounds.size.w, 30));
+		date_layer = text_layer_create(GRect(0, 45, bounds.size.w, 30));
 		text_layer_set_text_color(date_layer, GColorWhite);
 		text_layer_set_text(date_layer, "Today");
+		text_layer_set_font(date_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
 		text_layer_set_background_color(date_layer, GColorClear);
 		text_layer_set_text_alignment(date_layer, GTextAlignmentCenter);
 		// display it
