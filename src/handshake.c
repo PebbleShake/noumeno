@@ -1,7 +1,8 @@
 #include <pebble.h>
 
-//define animation framerate
-#define DELTA 100 
+//constants
+#define DELTA 33 
+#define sensitivity 850
 
 static void load_animation();
 
@@ -12,8 +13,6 @@ static TextLayer* time_layer, *date_layer;
 static GDrawCommandSequence *s_command_seq;
 static Layer *s_canvas_layer;
 static int frame_index = 0;
-
-static int sensitivity;
 
 /*
 	detect handshake
@@ -176,8 +175,7 @@ static void init(void) {
 		//black background
 		window_set_background_color(window, GColorBlack);
 
-		//set sensitivity and start 
-		sensitivity = 850;
+		//start 
     accel_data_service_subscribe(5, accel_data_handler);
     const bool animated = true;
 	
