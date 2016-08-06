@@ -1,0 +1,24 @@
+{
+    "author": "andrea.dolimpio@gmail.com",
+    "dependencies": {},
+    "keywords": [],
+    "name": "testshake",
+    "pebble": {
+        "capabilities": [
+            ""
+        ],
+        "displayName": "testShake",
+        "enableMultiJS": true,
+        "messageKeys": [],
+        "projectType": "native",
+        "resources": {
+            "media": []
+        },
+        "sdkVersion": "3",
+        "uuid": "78ecb587-163d-4c6a-990c-cc3bed81d9dc",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}
