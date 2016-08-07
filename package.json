@@ -2,12 +2,12 @@
     "author": "andrea.dolimpio@gmail.com",
     "dependencies": {},
     "keywords": [],
-    "name": "testshake",
+    "name": "pebbleshake",
     "pebble": {
         "capabilities": [
             ""
         ],
-        "displayName": "testShake",
+        "displayName": "PebbleShake",
         "enableMultiJS": true,
         "messageKeys": [],
         "projectType": "native",
@@ -27,7 +27,7 @@
             "basalt",
             "chalk"
         ],
-        "uuid": "78ecb587-163d-4c6a-990c-cc3bed81d9dc",
+        "uuid": "71e84c31-fb6a-4fe0-935c-e0207fe894d9",
         "watchapp": {
             "watchface": true
         }
